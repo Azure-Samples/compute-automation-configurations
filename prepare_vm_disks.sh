@@ -27,6 +27,7 @@
 #
 # Script Name: vm-disk-utils.sh
 # Author: Trent Swanson - Full Scale 180 Inc github:(trentmswanson)
+# https://github.com/Azure/azure-quickstart-templates/blob/master/shared_scripts/ubuntu/vm-disk-utils-0.1.sh
 
 
 # Base path for data disk mount points
