@@ -120,12 +120,7 @@ do_partition() {
         # default to Linux partition type (ie, ext3/ext4/xfs)
         _type=83
     fi
-    echo "n
-p
-1
-
-${_type}
-w"| fdisk "${_disk}"
+    (echo n; echo p; echo 1; echo ; echo ; echo ${_type}; echo w) | fdisk "${_disk}"
 
 #
 # Use the bash-specific $PIPESTATUS to ensure we get the correct exit code
