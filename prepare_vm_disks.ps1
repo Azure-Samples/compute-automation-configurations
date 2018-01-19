@@ -22,5 +22,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-New-WebBinding -Name "Default Web Site" -Protocol https -Port 443
-Get-ChildItem cert:\localmachine\My | New-Item -Path IIS:\SslBindings\!443
+$disks = Get-Disk | Where partitionstyle -eq 'raw' | sort number
+
+$letters = 70..89 | ForEach-Object { [char]$_ }
+$count = 0
+$label = "datadisk"
+
+foreach ($disk in $disks) {
+    $driveLetter = $letters[$count].ToString()
+    $disk | 
+    Initialize-Disk -PartitionStyle MBR -PassThru |
+    New-Partition -UseMaximumSize -DriveLetter $driveLetter |
+    Format-Volume -FileSystem NTFS -NewFileSystemLabel $label.$count -Confirm:$false -Force
+$count++
+}
