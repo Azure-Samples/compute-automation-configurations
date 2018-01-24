@@ -23,4 +23,4 @@
 # SOFTWARE.
 
 apt-get install -y nginx
-echo "Hello World from updated host" $HOSTNAME "!" | sudo tee -a /var/www/html/index.html
+echo "Hello World from updated host" $HOSTNAME "!" | sudo tee /var/www/html/index.html
