@@ -22,5 +22,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-New-WebBinding -Name "Default Web Site" -Protocol https -Port 443
-Get-ChildItem cert:\localmachine\My | New-Item -Path IIS:\SslBindings\!443
+Add-WindowsFeature Web-Server
+Set-Content -Path "C:\inetpub\wwwroot\Default.htm" -Value "Hello World from updated host $($env:computername) !"

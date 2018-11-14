@@ -22,5 +22,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-New-WebBinding -Name "Default Web Site" -Protocol https -Port 443
-Get-ChildItem cert:\localmachine\My | New-Item -Path IIS:\SslBindings\!443
+# Copy NGINX site file
+cp nginx /etc/nginx/sites-available/default
+chown www-data:www-data /etc/nginx/sites-available/default
+service nginx restart
+
+# Copy Node.js file
+mkdir /var/www/myapp
+cp hello-world-v1.js /var/www/myapp/index.js
+cd /var/www/myapp
+
+# Initialize and start Node.js app
+npm init -y
+npm install express -y
+npm install pm2 -g
+ln -s /usr/bin/nodejs /usr/bin/node
+pm2 start index.js

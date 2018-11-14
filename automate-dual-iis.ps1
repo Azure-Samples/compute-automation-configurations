@@ -22,5 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-New-WebBinding -Name "Default Web Site" -Protocol https -Port 443
-Get-ChildItem cert:\localmachine\My | New-Item -Path IIS:\SslBindings\!443
+# Install IIS
+Add-WindowsFeature Web-Server
+
+# Create directory and default page for Contoso
+New-Item -Path "C:\inetpub\wwwroot\contoso" -Type "Directory"
+Set-Content -Path "C:\inetpub\wwwroot\contoso\Default.htm" -Value "Contoso website on host $($env:computername) !"
+
+# Create IIS app pool and web site for Contoso
+New-WebAppPool -Name "ContosoAppPool"
+New-WebSite -Name "Contoso Web Site" -IPAddress "*" -Port 80 -HostHeader "contoso" -PhysicalPath "C:\inetpub\contoso" -ApplicationPool "ContosoAppPool"
+
+# Create directory and default page for Fabrikam
+New-Item -Path "C:\inetpub\wwwroot\fabrikam" -Type "Directory"
+Set-Content -Path "C:\inetpub\wwwroot\fabrikam\Default.htm" -Value "Fabrikam website on host $($env:computername) !"
+
+# Create IIS app pool and web site for Contoso
+New-WebAppPool -Name "FabrikamAppPool"
+New-WebSite -Name "Fabrikam Web Site" -IPAddress "*" -Port 80 -HostHeader "fabrikam" -PhysicalPath "C:\inetpub\fabrikam" -ApplicationPool "FabrikamAppPool"

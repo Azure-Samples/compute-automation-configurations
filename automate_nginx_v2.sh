@@ -22,5 +22,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-New-WebBinding -Name "Default Web Site" -Protocol https -Port 443
-Get-ChildItem cert:\localmachine\My | New-Item -Path IIS:\SslBindings\!443
+apt-get install -y nginx
+echo "Hello World from updated host" $HOSTNAME "!" | sudo tee /var/www/html/index.html
