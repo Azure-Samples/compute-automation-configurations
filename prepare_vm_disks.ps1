@@ -33,6 +33,6 @@ foreach ($disk in $disks) {
     $disk | 
     Initialize-Disk -PartitionStyle MBR -PassThru |
     New-Partition -UseMaximumSize -DriveLetter $driveLetter |
-    Format-Volume -FileSystem NTFS -NewFileSystemLabel $label.$count -Confirm:$false -Force
+    Format-Volume -FileSystem NTFS -NewFileSystemLabel "$label.$count" -Confirm:$false -Force
 $count++
 }
