@@ -1,0 +1,124 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmssName": {
+            "maxLength": 61,
+            "type": "String",
+            "metadata": {
+                "description": "Name of VMSS to be encrypted"
+            }
+        },
+        "keyVaultName": {
+            "type": "String",
+            "metadata": {
+                "description": "Name of the KeyVault to place the volume encryption key"
+            }
+        },
+        "keyVaultResourceGroup": {
+            "type": "String",
+            "metadata": {
+                "description": "Resource group of the KeyVault"
+            }
+        },
+        "keyEncryptionKeyURL": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "URL of the KeyEncryptionKey used to encrypt the volume encryption key"
+            }
+        },
+        "keyEncryptionAlgorithm": {
+            "defaultValue": "RSA-OAEP",
+            "type": "String",
+            "metadata": {
+                "description": "keyEncryptionAlgorithm used to wrap volume encryption key using KeyEncryptionKeyURL"
+            }
+        },
+        "volumeType": {
+            "defaultValue": "Data",
+            "type": "String",
+            "metadata": {
+                "description": "Volume type being targeted for encryption operation (Data is the only supported type in Linux VMSS Preview)"
+            }
+        },
+        "forceUpdateTag": {
+            "defaultValue": "1.0",
+            "type": "String",
+            "metadata": {
+                "description": "Pass in a unique value like a GUID everytime the operation needs to be force run"
+            }
+        },
+        "sequenceVersion": {
+            "defaultValue": "[uniqueString(resourceGroup().id, deployment().name)]",
+            "type": "String",
+            "metadata": {
+                "description": "Sequence version"
+            }
+        }
+    },
+    "variables": {
+        "computeApiVersion": "2018-06-01",
+        "extensionName": "AzureDiskEncryptionForLinux",
+        "extensionVersion": "1.1",
+        "encryptionOperation": "EnableEncryption",
+        "keyVaultURL": "[concat('https://', parameters('keyVaultName'), '.vault.azure.net/')]",
+        "keyVaultResourceID": "[concat(subscription().id,'/resourceGroups/',parameters('keyVaultResourceGroup'),'/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "name": "[parameters('vmssName')]",
+            "apiVersion": "[variables('computeApiVersion')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "virtualMachineProfile": {
+                    "extensionProfile": {
+                        "extensions": [
+                            {
+                                "name": "CustomScriptExtension",
+                                "properties": {
+                                    "publisher": "Microsoft.Azure.Extensions",
+                                    "type": "CustomScript",
+                                    "typeHandlerVersion": "2.0",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                        "fileUris": [
+                                            "https://raw.githubusercontent.com/Jyotsna-Anand/azure-automation-scripts/master/FormatLinuxDisksVmss.sh"
+                                        ],
+                                        "commandToExecute": "bash FormatLinuxDisksVmss.sh"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+                                "name": "[variables('extensionName')]",
+                                "location": "[resourceGroup().location]",
+                                "properties": {
+                                    "provisionAfterExtensions": [
+                                        "CustomScriptExtension"
+                                    ],
+                                    "publisher": "Microsoft.Azure.Security",
+                                    "type": "[variables('extensionName')]",
+                                    "typeHandlerVersion": "[variables('extensionVersion')]",
+                                    "autoUpgradeMinorVersion": true,
+                                    "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                                    "settings": {
+                                        "EncryptionOperation": "[variables('encryptionOperation')]",
+                                        "KeyVaultURL": "[variables('keyVaultURL')]",
+                                        "KeyVaultResourceId": "[variables('keyVaultResourceID')]",
+                                        "KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
+                                        "KekVaultResourceId": "[variables('keyVaultResourceID')]",
+                                        "KeyEncryptionAlgorithm": "[parameters('keyEncryptionAlgorithm')]",
+                                        "VolumeType": "[parameters('volumeType')]",
+                                        "SequenceVersion": "[parameters('sequenceVersion')]"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
