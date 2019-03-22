@@ -1,0 +1,124 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"vmssName": {
+			"type": "string",
+			"metadata": {
+				"description": "Name of VMSS to be encrypted"
+			},
+			"maxLength": 61
+		},
+		"keyVaultName": {
+			"type": "string",
+			"metadata": {
+				"description": "Name of the KeyVault to place the volume encryption key"
+			}
+		},
+		"keyVaultResourceGroup": {
+			"type": "string",
+			"metadata": {
+				"description": "Resource group of the KeyVault"
+			}
+		},
+		"keyEncryptionKeyURL": {
+			"type": "string",
+			"defaultValue": "",
+			"metadata": {
+				"description": "URL of the KeyEncryptionKey used to encrypt the volume encryption key"
+			}
+		},
+		"keyEncryptionAlgorithm": {
+			"type": "string",
+			"defaultValue": "",
+			"metadata": {
+				"description": "keyEncryptionAlgorithm used to wrap volume encryption key using KeyEncryptionKeyURL"
+			}
+		},
+		"volumeType": {
+			"type": "string",
+			"defaultValue": "All",
+			"metadata": {
+				"description": "Type of the volume OS or Data to perform encryption operation"
+			}
+		},
+		"forceUpdateTag": {
+			"type": "string",
+			"defaultValue": "[uniqueString(resourceGroup().id, deployment().name)]",
+			"metadata": {
+				"description": "Pass in an unique value like a GUID everytime the operation needs to be force run"
+			}
+		},
+		"sequenceVersion": {
+			"type": "string",
+			"defaultValue": "[uniqueString(resourceGroup().id, deployment().name)]",
+			"metadata": {
+				"description": "Sequence version"
+			}
+		}
+	},
+	"variables": {
+		"keyVaultResourceID": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Compute/virtualMachineScaleSets",
+			"name": "[parameters('vmssName')]",
+			"location": "[resourceGroup().location]",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"virtualMachineProfile": {
+					"extensionProfile": {
+						"extensions": [
+							{
+								"type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+								"name": "AzureDiskEncryption",
+								"location": "[resourceGroup().location]",
+								"properties": {
+									"provisionAfterExtensions": [
+										"CustomScriptExtension"
+									],
+									"publisher": "Microsoft.Azure.Security",
+									"type": "AzureDiskEncryption",
+									"typeHandlerVersion": "2.2",
+									"autoUpgradeMinorVersion": true,
+									"forceUpdateTag": "[parameters('forceUpdateTag')]",
+									"settings": {
+										"EncryptionOperation": "EnableEncryption",
+										"KeyVaultURL": "[reference(variables('keyVaultResourceId'),'2018-02-14-preview').vaultUri]",
+										"KeyVaultResourceId": "[variables('keyVaultResourceID')]",
+										"KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
+										"KekVaultResourceId": "[variables('keyVaultResourceID')]",
+										"KeyEncryptionAlgorithm": "[parameters('keyEncryptionAlgorithm')]",
+										"VolumeType": "[parameters('volumeType')]",
+										"SequenceVersion": "[parameters('sequenceVersion')]"
+									}
+								}
+							},
+							{
+								"type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+								"name": "CustomScriptExtension",
+								"location": "[resourceGroup().location]",
+								"properties": {
+									"publisher": "Microsoft.Compute",
+									"type": "CustomScriptExtension",
+									"typeHandlerVersion": "1.9",
+									"autoUpgradeMinorVersion": true,
+									"forceUpdateTag": "[parameters('forceUpdateTag')]",
+									"settings": {
+										"fileUris": [
+											"https://gist.githubusercontent.com/Jyotsna-Anand/b5dcdb4e9cc85b5beb41563f1c088737/raw/0f44d995074a460c26f624b6ca71d94445da0e20/FormatMBRDisk.ps1"
+										]
+									},
+									"protectedSettings": {
+									 "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File FormatMBRDisk.ps1"				  
+									}
+								}
+							}
+						]
+					}
+				}
+			}
+		}
+	]
+}
