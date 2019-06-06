@@ -35,6 +35,12 @@ DATA_BASE="/datadisks"
 # Mount options for data disk
 MOUNT_OPTIONS="noatime,nodiratime,nodev,noexec,nosuid,nofail"
 
+# log() was missing, added a basic one
+log()
+{
+    echo "$1"
+}
+
 is_partitioned() {
     OUTPUT=$(partx -s ${1} 2>&1)
     egrep "partition table does not contains usable partitions|failed to read partition table" <<< "${OUTPUT}" >/dev/null 2>&1
