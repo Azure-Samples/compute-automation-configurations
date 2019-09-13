@@ -1,7 +1,7 @@
 ---
 page_type: sample
 languages:
-- javasript
+- javascript
 - powershell
 products:
 - azure
