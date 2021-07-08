@@ -26,7 +26,15 @@ $letters = 83..89 | ForEach-Object { [char]$_ }
 $count = 0
 $label = "datadisk"
 
-for($index = 2; $index -lt $disks.Count; $index++) {
+[Array]$initializedDisks = Get-Disk | where { $_.PartitionStyle -ne 'Raw' }
+
+if ($initializedDisks.Count -eq 1) {
+    $indexStart = 1
+} else {
+    $indexStart = 2
+}
+
+for ($index = $indexStart; $index -lt $disks.Count; $index++) {
     $driveLetter = $letters[$count].ToString()
     if ($disks[$index].partitionstyle -eq 'raw') {
         $disks[$index] | Initialize-Disk -PartitionStyle MBR -PassThru |
