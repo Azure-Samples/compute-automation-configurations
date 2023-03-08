@@ -167,8 +167,9 @@
         },
         "properties": {
           "upgradePolicy": {
-            "mode": "Automatic"
+            "mode": "Manual"
           },
+          "orchestrationMode": "Flexible",
           "virtualMachineProfile": {
             "storageProfile": {
               "osDisk": {
