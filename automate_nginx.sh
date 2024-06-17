@@ -22,13 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Set the DEBIAN_FRONTEND to noninteractive
+# Set the DEBIAN_FRONTEND to noninteractive to avoid prompts
 export DEBIAN_FRONTEND=noninteractive
 
-# Update package lists and install nginx
-apt-get update -y
-apt-get install -y nginx 
-apt-get install -y dialog
+# Update package lists
+sudo apt-get update -y
 
-# Create a simple HTML file
-echo "Hello from your web application!" | sudo tee /var/www/html/index.html
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Create a simple HTML file with "Hello World"
+echo "Hello World" | sudo tee /var/www/html/index.html
+
+# Start and enable Nginx service
+sudo systemctl start nginx
+sudo systemctl enable nginx
