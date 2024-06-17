@@ -27,4 +27,4 @@ sudo apt-get update -y
 sudo apt-get install -y nginx
 
 # Create a simple HTML file
-echo "Hello" | sudo tee /var/www/html/index.html
+echo "Hello from your web application!" | sudo tee /var/www/html/index.html
