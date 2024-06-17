@@ -33,9 +33,9 @@ sudo apt-get update -y
 sudo apt-get install dialog apt-utils -y
 
 # Install Nginx
-apt-get install -y nginx
+sudo apt-get install -y nginx
 systemctl enable nginx
-systemctl restart nginx
+#systemctl restart nginx
 
 # Create a simple HTML file with "Hello from your web application!"
 echo "Hello from your web application!" | sudo tee /var/www/html/index.html
