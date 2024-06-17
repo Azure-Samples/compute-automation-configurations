@@ -22,7 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -y && apt-get upgrade -y
-apt-get install -y nginx && apt-get install -y dialog
-echo "Hello World from host" $HOSTNAME "!" | sudo tee /var/www/html/index.html
+# Update package lists and install nginx
+sudo apt-get update -y
+sudo apt-get install -y nginx
+
+# Create a simple HTML file
+echo "Hello" | sudo tee /var/www/html/index.html
