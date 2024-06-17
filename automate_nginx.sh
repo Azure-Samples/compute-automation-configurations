@@ -27,7 +27,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Update package lists and install nginx
 sudo apt-get update -y
-sudo apt-get install -y nginx && sudo apt-get install -y dialog
+sudo apt-get install -y nginx 
+sudo apt-get install -y dialog
 
 # Create a simple HTML file
 echo "Hello from your web application!" | sudo tee /var/www/html/index.html
