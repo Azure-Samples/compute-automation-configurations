@@ -22,5 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-apt-get install -y nginx
-echo "Hello World from updated host" $HOSTNAME "!" | sudo tee /var/www/html/index.html
+export DEBIAN_FRONTEND=noninteractive
+apt-get install -y nginx && apt-get install -y dialog
+echo "Hello World from updated host" $HOSTNAME "!" | sudo -a tee /var/www/html/index.html
