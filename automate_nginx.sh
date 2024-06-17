@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 # Set the DEBIAN_FRONTEND to noninteractive to avoid prompts
-#export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 
 # Update package lists
 apt-get update -y
