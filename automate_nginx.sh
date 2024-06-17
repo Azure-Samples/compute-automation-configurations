@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+export DEBIAN_FRONTEND=noninteractive
 apt-get update -y && apt-get upgrade -y
 apt-get install -y nginx && apt-get install -y dialog
 echo "Hello World from host" $HOSTNAME "!" | sudo tee /var/www/html/index.html
