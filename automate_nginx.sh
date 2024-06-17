@@ -23,11 +23,15 @@
 # SOFTWARE.
 
 # Set the DEBIAN_FRONTEND to noninteractive to avoid prompts
-export DEBIAN_FRONTEND=noninteractive
+#export DEBIAN_FRONTEND=noninteractive
+echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Update package lists
-apt-get update -y
-apt-get install dialog apt-utils -y
+sudo apt-get update -y
+
+# Install utilities
+sudo apt-get install dialog apt-utils -y
+
 # Install Nginx
 apt-get install -y nginx
 systemctl enable nginx
