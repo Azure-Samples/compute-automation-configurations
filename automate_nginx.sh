@@ -23,13 +23,13 @@
 # SOFTWARE.
 
 # Set the DEBIAN_FRONTEND to noninteractive to avoid prompts
-export DEBIAN_FRONTEND=noninteractive
+#export DEBIAN_FRONTEND=noninteractive
 
 # Update package lists
-sudo apt-get update -y
-
+apt-get update -y
+apt-get install dialog apt-utils -y
 # Install Nginx
-sudo apt-get install -y nginx
+apt-get install -y nginx
 systemctl enable nginx
 systemctl restart nginx
 
