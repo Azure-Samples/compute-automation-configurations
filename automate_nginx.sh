@@ -25,4 +25,4 @@
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y && apt-get upgrade -y
 apt-get install -y nginx && apt-get install -y dialog
-echo "Hello World from host" $HOSTNAME "!" | sudo tee /var/www/html/index.html
+echo "Hello World from host" $HOSTNAME "!" | sudo -a tee /var/www/html/index.html
