@@ -31,8 +31,8 @@ sudo apt-get update -y
 # Install Nginx
 sudo apt-get install -y nginx
 
-# Create a simple HTML file with "Hello World"
-echo "Hello World" | sudo tee /var/www/html/index.html
+# Create a simple HTML file with "Hello from your web application!"
+echo "Hello from your web application!" | sudo tee /var/www/html/index.html
 
 # Start and enable Nginx service
 sudo systemctl start nginx
